@@ -1,33 +1,32 @@
-#Extractor Expert: Gemini LLM
+#Extractor Expert: Gemini Pro Vision LLM
 Project Overview
-. So i took this as a motivation to my project I created an application using Google generative AI [GEMINI] and built an application .
-
+Recently i mom met with an accident,we took CT Scan for her and waiting for long time to meet the doctor,untill that i was searching google for each terminologies mentioned in report as I'm a biology student in my 10th standard,so my family members will share report and ask me the second opinion as like im an expert.So i took this as a motivation to my project I created an application using Google generative AI [GEMINI PRO VISION] and built an application .Usually We'll get the scan report from the centre and consult doctor accordingly based on their availability... So to make ease of this process, I built an application called Radiology Expert which answer about the scan image .
+ 
 Objectives
-To provide an intuitive tool for job seekers to match their resumes with job descriptions.
-To leverage advanced AI technology for analyzing and providing feedback on resumes.
-To offer a user-friendly interface that simplifies the resume review process.
+To provide an intuitive tool for diagnosis.
+To leverage advanced AI technology for analyzing and providing feedback on scan images.
+To offer a user-friendly interface that simplifies the process.
+
 Features
-Resume Upload: Users can upload their resume in PDF format.
-Job Description Input: A text input field allows users to paste the job description they are targeting.
-AI-Powered Analysis: Utilizing Gemini AI, the application provides a detailed analysis of the resume in context with the job description.
-Feedback on Different Aspects:
-Resume Review: General feedback on the resume.
-Skills Improvement: Suggestions for skills enhancement.
-Keywords Analysis: Identification of missing keywords in the resume.
-Match Percentage: A percentage score indicating how well the resume matches the job description.
+Scan Image Upload: Users can upload their medical imaging in JPEG,JPG,PNG format.
+Any Questions: A text input field allows users to ask questions, you will have your Radiologist expert right in front of you.
+AI-Powered Analysis: Utilizing Gemini AI, the application provides a detailed analysis of the scan image in context with the questions asked.
+
 Technologies Used
 Streamlit: For creating the web application interface.
-Google Generative AI (Gemini Pro Vision): For processing and analyzing the resume content.
+Google Generative AI (Gemini Pro Vision): For processing and analyzing the image content.
 Python: The primary programming language used for backend development.
 PDF2Image & PIL: For handling PDF file conversions and image processing.
+
 Challenges Faced
 Integration with Gemini AI: Ensuring seamless communication between the Streamlit interface and Gemini AI model.
-PDF Handling: Efficiently converting PDF content to a format suitable for analysis by the AI model.
 User Experience Optimization: Creating an intuitive and responsive UI.
+
+
 Future Enhancements
-Support for Multiple Pages: Extend the functionality to handle multi-page resumes.
+Support for Multiple scan images: Extend the functionality to handle multi-images.
 Customizable Feedback Categories: Allow users to choose specific areas for feedback.
-Interactive Resume Editing: Integrate a feature to edit the resume directly based on the AI's suggestions.
+Interactive conversation: Integrate a feature to interact directly based on the AI's suggestions.
 Enhanced Error Handling: Improve the system's robustness in handling various file formats and user inputs.
 Conclusion
-The Resume Expert Streamlit application stands as a significant tool in bridging the gap between job seekers and their ideal job roles. By harnessing the power of AI, it provides valuable insights and recommendations, making it a pivotal step in enhancing the job application process.
+The Radiologist Expert Streamlit application stands as a significant tool in bridging the gap. By harnessing the power of AI, it provides valuable insights and recommendations, making it a pivotal step in enhancing the understanding process.

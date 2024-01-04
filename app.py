@@ -10,6 +10,7 @@ import os
 import pathlib
 import textwrap
 from PIL import Image
+import pydicom 
 
 
 import google.generativeai as genai
@@ -17,6 +18,47 @@ import google.generativeai as genai
 
 os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
+def dicom_to_jpg(dicom_file):
+  """Converts a DICOM file to a JPG file.
+
+  Args:
+    dicom_file: The path to the DICOM file.
+
+  Returns:
+    A PIL Image object containing the converted JPG image.
+  """
+
+  # Read the DICOM file.
+  dicom_image = pydicom.dcmread(dicom_file)
+
+  # Get the pixel data.
+  pixel_data = dicom_image.pixel_array
+
+  # Convert the pixel data to RGB.
+  rgb_pixel_data = np.stack([pixel_data, pixel_data, pixel_data], axis=2)
+
+  # Create a PIL Image object from the RGB pixel data.
+  image = Image.fromarray(rgb_pixel_data, mode='RGB')
+
+  # Return the PIL Image object.
+  return image
+
+def save_dicom_file(dicom_file, folder_path):
+  """Saves a DICOM file to a folder.
+
+  Args:
+    dicom_file: The DICOM file to save.
+    folder_path: The path to the folder where the DICOM file should be saved.
+  """
+
+  # Create the folder if it does not exist.
+  if not os.path.exists(folder_path):
+    os.makedirs(folder_path)
+
+  # Save the DICOM file to the folder.
+  dicom_file.save_as(os.path.join(folder_path, dicom_file.filename))
+
 
 ## Function to load OpenAI model and get respones
 
@@ -49,7 +91,7 @@ st.set_page_config(page_title="Radiology Expert")
 
 st.header("LLM Application")
 input=st.text_input("Any Questions: ",key="input")
-uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Upload a DICOM file", type="dcm")
 image=""   
 #if uploaded_file is not None:
 #   image = Image.open(uploaded_file)
@@ -90,14 +132,23 @@ Highlight the abnormal and normal parts of the patient.
 
 if submit1:
     if uploaded_file is not None:
-        image_data = input_image_setup(uploaded_file)
+        dicom_file = pydicom.read_file(uploaded_file)
+        save_dicom_file(dicom_file, "dicom_files")
+        dicom_file_path = ("dicom_files")
+        jpg_image = dicom_to_jpg(dicom_file_path)
+        st.image(jpg_image)
+        #st.write(dicom_file)
+        """image_data = input_image_setup(uploaded_file)
         response=get_gemini_response(input_prompt1,image_data,input)
         st.subheader("The Response is")
         st.write(response)
+        """
     else:
         st.write("Please upload a image file to proceed.")
 else:
     if uploaded_file is not None:
+        dicom_file = pydicom.read_file(uploaded_file)
+        save_dicom_file(dicom_file, "dicom_files")
         image_data = input_image_setup(uploaded_file)
         response=get_gemini_response(input_prompt2,image_data,input)
         st.subheader("The Response is")

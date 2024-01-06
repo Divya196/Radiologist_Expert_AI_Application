@@ -1,25 +1,23 @@
 
-#from langchain.llms import OpenAI
-
 from dotenv import load_dotenv
 
 load_dotenv()  # take environment variables from .env.
 
 import streamlit as st
 import os
+import io
 import pathlib
 import textwrap
 from PIL import Image
 import pydicom 
-
-
+import numpy as np
 import google.generativeai as genai
 
 
 os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-def dicom_to_jpg(dicom_file):
+def dicom_to_jpg(dicom_filepath):
   """Converts a DICOM file to a JPG file.
 
   Args:
@@ -30,7 +28,7 @@ def dicom_to_jpg(dicom_file):
   """
 
   # Read the DICOM file.
-  dicom_image = pydicom.dcmread(dicom_file)
+  dicom_image = pydicom.dcmread(dicom_filepath)
 
   # Get the pixel data.
   pixel_data = dicom_image.pixel_array
@@ -38,11 +36,13 @@ def dicom_to_jpg(dicom_file):
   # Convert the pixel data to RGB.
   rgb_pixel_data = np.stack([pixel_data, pixel_data, pixel_data], axis=2)
 
-  # Create a PIL Image object from the RGB pixel data.
+  # Create a PIL Image object from the RGB pixel data.Return the PIL Image object.
   image = Image.fromarray(rgb_pixel_data, mode='RGB')
 
-  # Return the PIL Image object.
-  return image
+  #To save it as a jpg or png image
+  image.save('image.jpg')
+
+
 
 def save_dicom_file(dicom_file, folder_path):
   """Saves a DICOM file to a folder.
@@ -84,19 +84,30 @@ def input_image_setup(uploaded_file):
     else:
         raise FileNotFoundError("No file uploaded")
 
-
 ##initialize our streamlit app
 
 st.set_page_config(page_title="Radiology Expert")
 
 st.header("LLM Application")
-input=st.text_input("Any Questions: ",key="input")
+input=st.text_input("Input Prompt : ",key="input")
 uploaded_file = st.file_uploader("Upload a DICOM file", type="dcm")
-image=""   
-#if uploaded_file is not None:
-#   image = Image.open(uploaded_file)
-#   st.image(image, caption="Uploaded Image.", use_column_width=True)
 
+image=""   
+
+
+submit=st.button("CONVERT TO JPG FILE")
+## If ask button is clicked
+if submit:
+    if uploaded_file is not None:
+        dicom_file = pydicom.read_file(uploaded_file)
+        save_dicom_file(dicom_file, "dicom_files")
+        dicom_to_jpg(os.path.join("dicom_files", dicom_file.filename))
+        st.write("Jpg image file is ready to proceed.")
+
+    else:
+        st.write("Please upload a image file to proceed.")
+
+downloaded_file = st.file_uploader("Choose the jpg image now...", type="jpg")
 
 submit1 = st.button("Tell Me About the Scan Image")
 submit2 = st.button("View the Report")
@@ -104,7 +115,7 @@ submit2 = st.button("View the Report")
 
 
 input_prompt1 = """
- You are an experienced Technical Radiologist,your task is to review the provided images. 
+ You are an experienced Technical Radiologist,your task is to review the provided images along with the input prompt. 
  You are a Diagnostic radiologists, through extensive clinical work and related research, specialized in these radiology subspecialties:
 
 Breast imaging (mammograms)
@@ -125,36 +136,65 @@ Please share your professional evaluation on patient's condition in layman terms
 input_prompt2 = """
 You are an experienced Technical Radiologist,your task is to review the provided images and give me the professional scan report for the uploaded medical imaging.
 Please Use the uploaded medical imaging to diagnose,treat illnesses and give future medical care.
-Highlight the abnormal and normal parts of the patient.
+Highlight the abnormal and normal parts of the patient and also answerfor the input prompt
 """
 
-## If ask button is clicked
+
 
 if submit1:
-    if uploaded_file is not None:
-        dicom_file = pydicom.read_file(uploaded_file)
-        save_dicom_file(dicom_file, "dicom_files")
-        dicom_file_path = ("dicom_files")
-        jpg_image = dicom_to_jpg(dicom_file_path)
-        st.image(jpg_image)
-        #st.write(dicom_file)
-        """image_data = input_image_setup(uploaded_file)
+    if downloaded_file is not None:
+        image_data = input_image_setup(downloaded_file)
         response=get_gemini_response(input_prompt1,image_data,input)
         st.subheader("The Response is")
         st.write(response)
-        """
+      
     else:
         st.write("Please upload a image file to proceed.")
 else:
-    if uploaded_file is not None:
-        dicom_file = pydicom.read_file(uploaded_file)
-        save_dicom_file(dicom_file, "dicom_files")
-        image_data = input_image_setup(uploaded_file)
+    if downloaded_file is not None:
+        image_data = input_image_setup(downloaded_file)
         response=get_gemini_response(input_prompt2,image_data,input)
         st.subheader("The Response is")
         st.write(response)
     else:
         st.write("Please upload a image file to proceed.")
+
+#function to load gemini pro model and get response
+chat_model = genai.GenerativeModel("gemini-pro")
+chat = chat_model.start_chat(history=[])
+
+#later -->power of streamlit to store all the history in the form of seesions and stored in DB
+
+
+def get_gemini_response_chat(question):
+    response = chat.send_message(question,stream= True)
+    return response
+
+
+#initialize session state for chat history if it doesn't exist
+if 'chat_history' not in st.session_state:
+    st.session_state['chat_history'] = []
+
+
+chat_input = st.text_input("ASK YOUR QUESTIONS ",key="chat_input")
+submit3 = st.button("GO")
+
+if submit3 and chat_input:
+    response = get_gemini_response_chat(input)
+
+    #add user query and response to session chat history
+    st.session_state['chat_history'].append(("YOU: ",chat_input))
+    st.subheader("The response is")
+
+    for chunk in response:
+        st.write(chunk.text)
+        st.session_state['chat_history'].append(("BOT: ",chunk.text))
+
+
+st.subheader("The Chat history is")
+
+for role,text in st.session_state['chat_history']:
+    st.write(f"{role}:{text}")
 
 
 st.markdown("---")

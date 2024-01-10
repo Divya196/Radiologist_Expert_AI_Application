@@ -1,4 +1,4 @@
-###Extractor Expert: Gemini Pro Vision LLM
+###Radiologist Expert: Gemini Pro Vision LLM
 
 Project Overview
 

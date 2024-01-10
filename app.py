@@ -144,9 +144,6 @@ A typical radiology report includes the following five sections: Indication, Tec
 Hi Radiologist,The impression section is the most critical section of the report. This is where all of the findings are summarized and synthesized to present the results of your diagnostic imaging scans followed by a discussion of potential differential diagnoses and management suggestions
 
 """
-#You have an excellent patient care skill.
-#Please Use the uploaded medical imaging to diagnose,treat illnesses and give future medical care.
-#Highlight the abnormal and normal parts of the patient and also answerfor the input prompt
 
 
 

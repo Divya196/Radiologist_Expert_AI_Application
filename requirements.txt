@@ -1,8 +1,10 @@
 streamlit
 google-generativeai
 python-dotenv
-langchain
-PyPDF2
-chromadb
-faiss-cpu
-matplotlib
+pydicom
+numpy
+#langchain
+#PyPDF2
+#chromadb
+#faiss-cpu
+#matplotlib

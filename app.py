@@ -107,7 +107,7 @@ if submit:
     else:
         st.write("Please upload a image file to proceed.")
 
-downloaded_file = st.file_uploader("Choose the jpg image now...", type="jpg")
+downloaded_file = st.file_uploader("Upload the medical imaging", type=["jpg","jpeg","png"])
 
 submit1 = st.button("Tell Me About the Scan Image")
 submit2 = st.button("View the Report")
@@ -115,8 +115,9 @@ submit2 = st.button("View the Report")
 
 
 input_prompt1 = """
- You are an experienced Technical Radiologist,your task is to review the provided images along with the input prompt. 
- You are a Diagnostic radiologists, through extensive clinical work and related research, specialized in these radiology subspecialties:
+ you are an experienced radiologist,please review the uploaded medical imaging and give me the consultation in layman terms.
+ You have an excellent patient care skill to diagnose,treat illnesses and give future medical care.
+ You are a Diagnostic radiologists,specialized in these radiology subspecialties:
 
 Breast imaging (mammograms)
 Cardiovascular radiology (heart and circulatory system)
@@ -129,15 +130,23 @@ Musculoskeletal radiology (muscles and skeleton)
 Neuroradiology (brain and nervous system; head, neck and spine)
 Pediatric radiology (imaging of children)
 
-You have an excellent patient care skill.
-Please share your professional evaluation on patient's condition in layman terms. 
+
+Please tell me where is the lesian and how long it will take to cure along with the input prompt.
+
+
+
 """
 
 input_prompt2 = """
-You are an experienced Technical Radiologist,your task is to review the provided images and give me the professional scan report for the uploaded medical imaging.
-Please Use the uploaded medical imaging to diagnose,treat illnesses and give future medical care.
-Highlight the abnormal and normal parts of the patient and also answerfor the input prompt
+You are an experienced Radiologist ,analyse the uploaded medical imaging.please provide me the professional radiology report,that is a document that details the most pertinent information of an imaging study.
+The report must convey all the pertinent details to the clinician in a clear and concise way.
+A typical radiology report includes the following five sections: Indication, Technique, Comparison, Findings, Impression.Each section serves an essential purpose in communicating the details and results of an imaging procedure.
+Hi Radiologist,The impression section is the most critical section of the report. This is where all of the findings are summarized and synthesized to present the results of your diagnostic imaging scans followed by a discussion of potential differential diagnoses and management suggestions
+
 """
+#You have an excellent patient care skill.
+#Please Use the uploaded medical imaging to diagnose,treat illnesses and give future medical care.
+#Highlight the abnormal and normal parts of the patient and also answerfor the input prompt
 
 
 
@@ -159,43 +168,43 @@ else:
     else:
         st.write("Please upload a image file to proceed.")
 
+#
 #function to load gemini pro model and get response
-chat_model = genai.GenerativeModel("gemini-pro")
-chat = chat_model.start_chat(history=[])
+#chat_model = genai.GenerativeModel("gemini-pro")
+#chat = chat_model.start_chat(history=[])
 
 #later -->power of streamlit to store all the history in the form of seesions and stored in DB
 
 
-def get_gemini_response_chat(question):
-    response = chat.send_message(question,stream= True)
-    return response
+#def get_gemini_response_chat(question):
+#    response = chat.send_message(question,stream= True)
+#    return response
 
 
 #initialize session state for chat history if it doesn't exist
-if 'chat_history' not in st.session_state:
-    st.session_state['chat_history'] = []
+#if 'chat_history' not in st.session_state:
+#    st.session_state['chat_history'] = []
 
 
-chat_input = st.text_input("ASK YOUR QUESTIONS ",key="chat_input")
-submit3 = st.button("GO")
+#chat_input = st.text_input("ASK YOUR QUESTIONS ",key="chat_input")
+#submit3 = st.button("SEND MESSAGE")
 
-if submit3 and chat_input:
-    response = get_gemini_response_chat(input)
+#if submit3 and chat_input:
+#    response = get_gemini_response_chat(input)
 
     #add user query and response to session chat history
-    st.session_state['chat_history'].append(("YOU: ",chat_input))
-    st.subheader("The response is")
+#    st.session_state['chat_history'].append(("YOU: ",chat_input))
+#    st.subheader("The Response is : ")
 
-    for chunk in response:
-        st.write(chunk.text)
-        st.session_state['chat_history'].append(("BOT: ",chunk.text))
+#    for chunk in response:
+#        st.write(chunk.text)
+#        st.session_state['chat_history'].append(("BOT: ",chunk.text))
 
 
-st.subheader("The Chat history is")
+#st.subheader("The Chat history is")
 
-for role,text in st.session_state['chat_history']:
-    st.write(f"{role}:{text}")
-
+#for role,text in st.session_state['chat_history']:
+#    st.write(f"{role}:{text}")
 
 st.markdown("---")
 st.caption("Radiology Expert offers a helping hand, to assist you in the correct interpretation and diagnosis of imaging studies.")

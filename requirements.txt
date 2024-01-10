@@ -3,8 +3,4 @@ google-generativeai
 python-dotenv
 pydicom
 numpy
-#langchain
-#PyPDF2
-#chromadb
-#faiss-cpu
-#matplotlib
+

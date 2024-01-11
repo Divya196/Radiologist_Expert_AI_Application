@@ -8,13 +8,13 @@ Objectives
 
 To provide an intuitive tool for diagnosis.
 
-To leverage advanced AI technology for analyzing and providing feedback on scan images.
+To leverage advanced AI technology for analyzing and providing feedback on medical imaging.
 
 To offer a user-friendly interface that simplifies the process.
 
 Features
 
-Scan Image Upload: Users can upload their medical imaging in JPEG,JPG,PNG format.
+Scan Image Upload: Users can upload their medical imaging in DICOM,JPEG,JPG,PNG format.
 
 Any Questions: A text input field allows users to ask questions, you will have your Radiologist expert right in front of you.
 
